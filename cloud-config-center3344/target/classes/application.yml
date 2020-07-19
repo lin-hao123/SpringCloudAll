@@ -1,0 +1,43 @@
+server:
+  port: 3344
+#访问方式：
+#/{label}/{application}-{profile}.yml  http://config-3344.com:3344/master/config-dev.yml
+#/{application}-{profile}.yml   http://config-3344.com:3344/config-prod.yml(下面已经配过是master分支，如果没有配置，会默认找master分支)
+#/{application}/{profile}/{label}  http://config-3344.com:3344/config/prod/master （结果是个json串，需要再解析）
+
+
+spring:
+  application:
+    name: cloud-config-center  #注册eureka服务器的微服务名
+  cloud:
+    config:
+      server:
+        git:
+          uri: https://github.com/lin-hao123/springcloud-config.git
+          #搜索目录
+          #读取分支
+          search-paths:
+            - springcloud-config
+      label: master
+
+rabbitmq:
+  host: localhost
+  port: 5672
+  username: guest
+  password: guest
+
+#服务注册到eureka地址
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka7001.com:7001/eureka
+#rabbitmq相关配置，暴露bus刷新配置的端点
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "bus-refresh"
+#此时动态刷新，只要刷新消息总线的配置中心即可  curl -X POST "http://localhost:3344/actuator/bus-refresh"
+#如果想要定点通知，假如只想刷3355，则刷：  curl -X POST "http://localhost:3344/actuator/bus-refresh/config-client:3355"
+#                        格式：  curl -X POST "http://localhost:配置中心端口/actuator/中心暴露点/客户端微服务名:客户端口"
+

@@ -1,0 +1,8 @@
+server:
+  port: 80
+spring:
+  application:
+    name: cloud-provider-order
+  cloud:
+    zookeeper:
+      connect-string: 172.20.10.7:2181 #zookeeper的ip+端口号，如果做zookeeper集群，则添个逗号，然后地址+端口号
